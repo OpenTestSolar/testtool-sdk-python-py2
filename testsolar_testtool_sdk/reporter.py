@@ -3,13 +3,12 @@
 import logging
 import os
 import struct
-from datetime import datetime
 
-import jsonpickle
 import portalocker
-from typing import Optional, BinaryIO, Any
+import simplejson
+from typing import Optional, BinaryIO, Any, Dict, Union
 
-from testsolar_testtool_sdk.model.encoder import DateTimeHandler
+from testsolar_testtool_sdk.model.encoder import DateTimeEncoder
 from testsolar_testtool_sdk.model.load import LoadResult
 from testsolar_testtool_sdk.model.testresult import TestResult
 
@@ -18,9 +17,6 @@ MAGIC_NUMBER = 0x1234ABCD
 
 # 跟TestSolar uniSDK约定的管道上报文件描述符号
 PIPE_WRITER = 3
-
-jsonpickle.handlers.registry.register(datetime, DateTimeHandler)
-jsonpickle.set_encoder_options('json', ensure_ascii=False)
 
 
 class Reporter:
@@ -78,9 +74,15 @@ class Reporter:
         self.pipe_io.flush()
 
 
+def _object_to_dict(obj):
+    # type: (Any) -> Union[Dict, str]
+    return simplejson.dumps(obj, cls=DateTimeEncoder)
+
+
 def convert_to_json(result, full_type):
     # type: (Any, bool) -> str
+
     if full_type:
-        return jsonpickle.encode(result, unpicklable=True)
+        return simplejson.dumps(result, cls=DateTimeEncoder)
     else:
-        return jsonpickle.encode(result, unpicklable=False)
+        return simplejson.dumps(result, cls=DateTimeEncoder)

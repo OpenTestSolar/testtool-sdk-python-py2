@@ -1,19 +1,24 @@
 # coding=utf-8
 from datetime import datetime
 
-import jsonpickle
+from testsolar_testtool_sdk.model.load import LoadResult, LoadError
+from testsolar_testtool_sdk.model.testresult import TestCase
+
+import simplejson
 
 
-class DateTimeHandler(jsonpickle.handlers.BaseHandler):
-    def flatten(self, obj, data):
+class DateTimeEncoder(simplejson.JSONEncoder):
+    def default(self, obj):
         if isinstance(obj, datetime):
             return _format_datetime(obj)
+        elif isinstance(obj, LoadResult):
+            return obj.__dict__
+        elif isinstance(obj, LoadError):
+            return obj.__dict__
+        elif isinstance(obj, TestCase):
+            return obj.__dict__
         else:
-            return jsonpickle.encode(self, data)
-
-    def restore(self, obj):
-        # 提供反序列化的方法
-        return datetime.strptime(obj, '%Y-%m-%dT%H:%M:%S.%f')
+            return super(DateTimeEncoder, self).default(obj)
 
 
 def _format_datetime(t):

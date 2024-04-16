@@ -6,8 +6,6 @@ import logging
 import threading
 from datetime import datetime, timedelta
 
-import jsonpickle
-
 from testsolar_testtool_sdk.model.load import LoadResult, LoadError
 from testsolar_testtool_sdk.model.testresult import ResultType, LogLevel, TestCase
 from testsolar_testtool_sdk.model.testresult import (
