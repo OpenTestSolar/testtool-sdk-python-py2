@@ -11,8 +11,8 @@ def get_requires(req_file):
 
 
 setup(
-    name='testtool-sdk-python-py2',
-    version='0.1.0',
+    name='testsolar-testtool-sdk-py2',
+    version='0.1.1',
     author='asiazhang',
     author_email='asiazhang2002@gmail.com',
     description='Python2 SDK for TestSolar testtool',

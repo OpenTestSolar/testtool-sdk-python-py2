@@ -28,7 +28,7 @@ jobs:
         python-version: '3.x'
     - name: Install dependencies
       run: |
-        pip install -r requirements.txt -r test-requirements.txt
+        pip install -r requirements.txt -r requirements-dev.txt
     - name: Build package
       run: |
         python setup.py dist
