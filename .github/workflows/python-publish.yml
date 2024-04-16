@@ -28,7 +28,7 @@ jobs:
         pip install -r requirements.txt -r requirements-dev.txt
     - name: Build package
       run: |
-        python setup.py dist
+        python setup.py sdist
         python setup.py bdist_wheel
     - name: Publish package
       uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
