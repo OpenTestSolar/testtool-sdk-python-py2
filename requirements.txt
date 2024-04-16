@@ -1,0 +1,4 @@
+portalocker<2
+typing
+enum34
+jsonpickle

@@ -1,0 +1,16 @@
+{
+  "TaskId": "afre89u789",
+  "ProjectPath": "/test/data/3289",
+  "FileReportPath": "/test/data/3289/report",
+  "Collectors": [
+    "aa",
+    "bb"
+  ],
+  "Context": {
+    "aa": "bb"
+  },
+  "TestSelectors": [
+    "aaa",
+    "bbb"
+  ]
+}
