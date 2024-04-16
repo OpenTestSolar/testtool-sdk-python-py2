@@ -12,12 +12,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: bitnami/python:2.7.18
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 2.7
-      uses: actions/setup-python@v4
-      with:
-        python-version: '2.7'
     - name: Install dependencies
       run: |
         pip install -r requirements.txt -r test-requirements.txt
