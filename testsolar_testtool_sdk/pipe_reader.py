@@ -3,27 +3,17 @@
 import struct
 
 import simplejson
-from typing import BinaryIO
+from typing import BinaryIO, Dict
 
-from testsolar_testtool_sdk.model.load import LoadResult
-from testsolar_testtool_sdk.model.testresult import TestResult
 from testsolar_testtool_sdk.reporter import MAGIC_NUMBER
 
 
-# 从管道读取加载结果，仅供单元测试使用
-def read_load_result(pipe_io):
-    # type: (BinaryIO) -> LoadResult
-    result_data = _read_model(pipe_io)
-
-    return simplejson.loads(result_data)
-
-
 # 从管道读取测试用例结果，仅供单元测试使用
-def read_test_result(pipe_io):
-    # type: (BinaryIO) -> TestResult
+def read_result(pipe_io):
+    # type: (BinaryIO) -> Dict
     result_data = _read_model(pipe_io)
 
-    return simplejson.loads(result_data)
+    return simplejson.loads(result_data, encoding=None)
 
 
 def _read_model(pipe_io):

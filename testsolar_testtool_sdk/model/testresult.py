@@ -87,7 +87,6 @@ class TestCaseStep:
         self.ResultType = result_type
         self.EndTime = end_time
         self.Logs = logs
-        pass
 
 
 class TestResult:

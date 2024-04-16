@@ -23,14 +23,13 @@ class Reporter:
     def __enter__(self):
         return self
 
-    def __init__(self, pipe_io=None, full_type=False):
-        # type: (Optional[BinaryIO], bool) -> None
+    def __init__(self, pipe_io=None):
+        # type: (Optional[BinaryIO]) -> None
         """
         初始化报告工具类
         :param pipe_io: 可选的管道，用于测试
         """
         self.lock_file = "/tmp/testsolar_reporter.lock"
-        self.full_type = full_type
 
         if pipe_io:
             self.pipe_io = pipe_io
@@ -56,7 +55,7 @@ class Reporter:
 
     def _send_json(self, result):
         # type: (Any) -> None
-        data = convert_to_json(result, full_type=self.full_type)
+        data = convert_to_json(result)
         data_bytes = data.encode("utf-8")
         length = len(data_bytes)
 
@@ -79,10 +78,6 @@ def _object_to_dict(obj):
     return simplejson.dumps(obj, cls=DateTimeEncoder)
 
 
-def convert_to_json(result, full_type):
-    # type: (Any, bool) -> str
-
-    if full_type:
-        return simplejson.dumps(result, cls=DateTimeEncoder)
-    else:
-        return simplejson.dumps(result, cls=DateTimeEncoder)
+def convert_to_json(result):
+    # type: (Any) -> str
+    return simplejson.dumps(result, cls=DateTimeEncoder, ensure_ascii=False)

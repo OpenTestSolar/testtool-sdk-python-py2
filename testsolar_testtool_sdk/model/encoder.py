@@ -2,7 +2,8 @@
 from datetime import datetime
 
 from testsolar_testtool_sdk.model.load import LoadResult, LoadError
-from testsolar_testtool_sdk.model.testresult import TestCase
+from testsolar_testtool_sdk.model.testresult import TestCase, TestResult, TestCaseStep, TestCaseLog, TestCaseAssertError, \
+    TestCaseRuntimeError, Attachment
 
 import simplejson
 
@@ -16,6 +17,18 @@ class DateTimeEncoder(simplejson.JSONEncoder):
         elif isinstance(obj, LoadError):
             return obj.__dict__
         elif isinstance(obj, TestCase):
+            return obj.__dict__
+        elif isinstance(obj, TestResult):
+            return obj.__dict__
+        elif isinstance(obj, TestCaseStep):
+            return obj.__dict__
+        elif isinstance(obj, TestCaseLog):
+            return obj.__dict__
+        elif isinstance(obj, TestCaseAssertError):
+            return obj.__dict__
+        elif isinstance(obj, TestCaseRuntimeError):
+            return obj.__dict__
+        elif isinstance(obj, Attachment):
             return obj.__dict__
         else:
             return super(DateTimeEncoder, self).default(obj)
