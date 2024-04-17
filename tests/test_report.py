@@ -6,8 +6,6 @@ import logging
 import threading
 from datetime import datetime, timedelta
 
-import jsonpickle
-
 from testsolar_testtool_sdk.model.load import LoadResult, LoadError
 from testsolar_testtool_sdk.model.testresult import ResultType, LogLevel, TestCase
 from testsolar_testtool_sdk.model.testresult import (
@@ -16,7 +14,7 @@ from testsolar_testtool_sdk.model.testresult import (
     TestCaseAssertError,
     TestCaseLog,
 )
-from testsolar_testtool_sdk.pipe_reader import read_load_result, read_test_result
+from testsolar_testtool_sdk.pipe_reader import read_result
 from testsolar_testtool_sdk.reporter import Reporter, convert_to_json
 
 logger = logging.getLogger(__name__)
@@ -108,7 +106,7 @@ def test_report_load_result():
     # type: () -> None
     # 创建一个Reporter实例
     pipe_io = io.BytesIO()
-    with Reporter(pipe_io=pipe_io, full_type=True) as reporter:
+    with Reporter(pipe_io=pipe_io) as reporter:
         # 创建一个LoadResult实例
         load_result = generate_demo_load_result()
 
@@ -118,11 +116,11 @@ def test_report_load_result():
         # 检查管道中的魔数
         pipe_io.seek(0)
 
-        loaded = read_load_result(pipe_io)
-        assert len(loaded.LoadErrors) == len(load_result.LoadErrors)
-        assert len(loaded.Tests) == len(load_result.Tests)
-        assert loaded.LoadErrors[0].name == load_result.LoadErrors[0].name.decode("utf-8")
-        assert loaded.LoadErrors[0].message == load_result.LoadErrors[0].message.decode("utf-8")
+        loaded = read_result(pipe_io)
+        assert len(loaded.get('LoadErrors')) == len(load_result.LoadErrors)
+        assert len(loaded.get('Tests')) == len(load_result.Tests)
+        assert loaded.get('LoadErrors')[0].get('name') == load_result.LoadErrors[0].name.decode("utf-8")
+        assert loaded.get('LoadErrors')[0].get('message') == load_result.LoadErrors[0].message.decode("utf-8")
 
 
 def send_test_result(reporter):
@@ -135,7 +133,7 @@ def send_test_result(reporter):
 
 def test_datetime_formatted():
     run_case_result = generate_test_result(0)
-    data = convert_to_json(run_case_result, False)
+    data = convert_to_json(run_case_result)
     tr = json.loads(data)
     assert tr['StartTime'].endswith("Z")
     assert tr['EndTime'].endswith("Z")
@@ -150,7 +148,7 @@ def test_report_run_case_result():
     threads = []
     # 创建一个Reporter实例
     pipe_io = io.BytesIO()
-    with Reporter(pipe_io=pipe_io, full_type=True) as reporter:
+    with Reporter(pipe_io=pipe_io) as reporter:
         # 创建五个LoadResult实例并发调用report_run_case_result方法
         for i in range(5):
             # 创建线程
@@ -165,13 +163,13 @@ def test_report_run_case_result():
 
         # 检查管道中的数据，确保每个用例的魔数和数据长度还有数据正确
         pipe_io.seek(0)
-        r1 = read_test_result(pipe_io)  # type: TestResult
-        assert r1.ResultType == ResultType.SUCCEED
-        r2 = read_test_result(pipe_io)
-        assert r2.ResultType == ResultType.SUCCEED
-        r3 = read_test_result(pipe_io)
-        assert r3.ResultType == ResultType.SUCCEED
-        r4 = read_test_result(pipe_io)
-        assert r4.ResultType == ResultType.SUCCEED
-        r5 = read_test_result(pipe_io)
-        assert r5.ResultType == ResultType.SUCCEED
+        r1 = read_result(pipe_io)
+        assert r1.get('ResultType') == ResultType.SUCCEED
+        r2 = read_result(pipe_io)
+        assert r2.get('ResultType') == ResultType.SUCCEED
+        r3 = read_result(pipe_io)
+        assert r3.get('ResultType') == ResultType.SUCCEED
+        r4 = read_result(pipe_io)
+        assert r4.get('ResultType') == ResultType.SUCCEED
+        r5 = read_result(pipe_io)
+        assert r5.get('ResultType') == ResultType.SUCCEED
