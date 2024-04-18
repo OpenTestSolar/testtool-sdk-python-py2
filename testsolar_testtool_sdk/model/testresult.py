@@ -8,7 +8,7 @@ class TestCase:
     __test__ = False
 
     def __init__(self, name, attributes):
-        # type: (unicode, Dict[unicode,unicode]) -> None
+        # type: (str, Dict[str,str]) -> None
         self.Name = name
         self.Attributes = attributes
 
@@ -41,7 +41,7 @@ class TestCaseAssertError:
     __test__ = False
 
     def __init__(self, expected, actual, message):
-        # type: (unicode, unicode, unicode) -> None
+        # type: (str, str, str) -> None
         self.Expect = expected
         self.Actual = actual
         self.Message = message
@@ -51,14 +51,14 @@ class TestCaseRuntimeError:
     __test__ = False
 
     def __init__(self, summary, detail):
-        # type: (unicode, unicode) -> None
+        # type: (str, str) -> None
         self.Summary = summary
         self.Detail = detail
 
 
 class Attachment:
     def __init__(self, name, url, attachment_type):
-        # type: (unicode, unicode, AttachmentType) -> None
+        # type: (str, str, AttachmentType) -> None
         self.Name = name
         self.Url = url
         self.AttachmentType = attachment_type
@@ -68,7 +68,7 @@ class TestCaseLog:
     __test__ = False
 
     def __init__(self, time, level, content, assert_error, runtime_error, attachments):
-        # type: (datetime, LogLevel, unicode, Optional[TestCaseAssertError], Optional[TestCaseRuntimeError], List[Attachment]) -> None
+        # type: (datetime, LogLevel, str, Optional[TestCaseAssertError], Optional[TestCaseRuntimeError], List[Attachment]) -> None
         self.Time = time
         self.Level = level
         self.Content = content
@@ -81,7 +81,7 @@ class TestCaseStep:
     __test__ = False
 
     def __init__(self, start_time, title, result_type, end_time, logs):
-        # type:(datetime, unicode, ResultType, datetime, List[TestCaseLog]) -> None
+        # type:(datetime, str, ResultType, datetime, List[TestCaseLog]) -> None
         self.StartTime = start_time
         self.Title = title
         self.ResultType = result_type
@@ -93,7 +93,7 @@ class TestResult:
     __test__ = False
 
     def __init__(self, test, start_time, result_type, message, end_time, steps):
-        # type: (TestCase, datetime, ResultType, unicode, Optional[datetime], List[TestCaseStep]) -> None
+        # type: (TestCase, datetime, ResultType, str, Optional[datetime], List[TestCaseStep]) -> None
         self.Test = test
         self.StartTime = start_time
         self.ResultType = result_type
