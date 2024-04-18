@@ -5,7 +5,7 @@ from testsolar_testtool_sdk.model.testresult import TestCase
 
 class LoadError:
     def __init__(self, name, message):
-        # type: (unicode, unicode) -> None
+        # type: (str, str) -> None
         self.name = name
         self.message = message
 

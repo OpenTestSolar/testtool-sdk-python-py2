@@ -4,7 +4,7 @@ from typing import Dict, List
 
 class EntryParam:
     def __init__(self, task_id, project_path, file_report_path, collectors, context, test_selectors):
-        # type: (unicode, unicode, unicode, List[unicode], Dict[unicode, unicode], List[unicode]) -> None
+        # type: (str, str, str, List[str], Dict[str, str], List[str]) -> None
         self.TaskId = task_id
         self.ProjectPath = project_path
         self.FileReportPath = file_report_path
