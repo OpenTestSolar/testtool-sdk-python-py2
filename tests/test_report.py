@@ -13,6 +13,9 @@ from testsolar_testtool_sdk.model.testresult import (
     TestCaseStep,
     TestCaseAssertError,
     TestCaseLog,
+    TestCaseRuntimeError,
+    Attachment,
+    AttachmentType,
 )
 from testsolar_testtool_sdk.pipe_reader import read_result
 from testsolar_testtool_sdk.reporter import Reporter, convert_to_json
@@ -173,3 +176,38 @@ def test_report_run_case_result():
         assert r4.get('ResultType') == ResultType.SUCCEED
         r5 = read_result(pipe_io)
         assert r5.get('ResultType') == ResultType.SUCCEED
+
+
+def test_convert_to_json_with_custom_encoder():
+    tr = TestResult(
+        TestCase("mumu/mu.py/test_case_name_%s_p1", {"tag": "bbb"}),
+        datetime.utcnow(),
+        ResultType.SUCCEED,
+        "ファイルが見つかりません",
+        datetime.utcnow(),
+        [TestCaseStep(
+            start_time=datetime.utcnow(),
+            title="hello world",
+            result_type=ResultType.SUCCEED,
+            end_time=datetime.utcnow(),
+            logs=[
+                TestCaseLog(
+                    time=datetime.utcnow(),
+                    level=LogLevel.INFO,
+                    content="hello world 1",
+                    assert_error=TestCaseAssertError("AAA", "BBB", "AAA is not BBB"),
+                    runtime_error=TestCaseRuntimeError("AAA", "BBB"),
+                    attachments=[Attachment(
+                        name="attachment 1",
+                        attachment_type=AttachmentType.URL,
+                        url="https://example.com",
+                    )]
+                )
+            ]
+        )],
+    )
+
+    re = json.loads(convert_to_json(tr))
+
+    assert len(re['Steps']) == 1
+    assert re['Steps'][0]['Logs'][0]['RuntimeError']['Summary'] == 'AAA'
