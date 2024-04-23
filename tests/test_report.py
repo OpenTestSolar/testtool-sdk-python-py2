@@ -22,7 +22,7 @@ logger.setLevel(logging.DEBUG)
 
 
 def get_random_unicode(length):
-    # type: (int) -> unicode
+    # type: (int) -> str
     return "文件不存在:파일 つかりません"
 
 

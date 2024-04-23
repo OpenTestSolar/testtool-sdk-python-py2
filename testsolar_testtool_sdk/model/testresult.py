@@ -67,8 +67,8 @@ class Attachment:
 class TestCaseLog:
     __test__ = False
 
-    def __init__(self, time, level, content, assert_error, runtime_error, attachments):
-        # type: (datetime, LogLevel, str, Optional[TestCaseAssertError], Optional[TestCaseRuntimeError], List[Attachment]) -> None
+    def __init__(self, time, level, content, assert_error=None, runtime_error=None, attachments=None):
+        # type: (datetime, LogLevel, str, Optional[TestCaseAssertError], Optional[TestCaseRuntimeError], Optional[List[Attachment]]) -> None
         self.Time = time
         self.Level = level
         self.Content = content
@@ -92,8 +92,8 @@ class TestCaseStep:
 class TestResult:
     __test__ = False
 
-    def __init__(self, test, start_time, result_type, message, end_time, steps):
-        # type: (TestCase, datetime, ResultType, str, Optional[datetime], List[TestCaseStep]) -> None
+    def __init__(self, test, start_time, result_type, message, end_time=None, steps=None):
+        # type: (TestCase, datetime, ResultType, str, Optional[datetime], Optional[List[TestCaseStep]]) -> None
         self.Test = test
         self.StartTime = start_time
         self.ResultType = result_type
