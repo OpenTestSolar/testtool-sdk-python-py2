@@ -7,3 +7,6 @@ def test_decode_env_value():
 
     re = decode_env_value("b64://aGVsbG8=")
     assert re == "hello"
+
+    re = decode_env_value("b64://uf893uf9")
+    assert re == "b64://uf893uf9"

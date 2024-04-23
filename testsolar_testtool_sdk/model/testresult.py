@@ -76,6 +76,15 @@ class TestCaseLog:
         self.RuntimeError = runtime_error
         self.Attachments = attachments
 
+    def is_error(self):
+        # type: () -> bool
+        """
+        Checks if the log is an error
+        """
+        return self.Level in [
+            LogLevel.ERROR,
+        ]
+
 
 class TestCaseStep:
     __test__ = False

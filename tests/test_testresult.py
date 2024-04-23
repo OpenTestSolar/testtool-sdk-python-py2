@@ -1,4 +1,4 @@
-from testsolar_testtool_sdk.model.testresult import TestResult, TestCase, ResultType
+from testsolar_testtool_sdk.model.testresult import TestResult, TestCase, ResultType, TestCaseLog, LogLevel
 from datetime import datetime
 
 
@@ -26,3 +26,13 @@ def test_is_not_final():
     )
 
     assert not tr.is_final()
+
+
+def test_log_is_not_error():
+    log = TestCaseLog(time=datetime.now(), level=LogLevel.WARN, content="")
+    assert not log.is_error()
+
+
+def test_log_is_error():
+    log = TestCaseLog(time=datetime.now(), level=LogLevel.ERROR, content="boom!")
+    assert log.is_error()
