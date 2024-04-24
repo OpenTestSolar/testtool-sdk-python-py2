@@ -89,8 +89,8 @@ class TestCaseLog:
 class TestCaseStep:
     __test__ = False
 
-    def __init__(self, start_time, title, result_type, end_time, logs):
-        # type:(datetime, str, ResultType, datetime, List[TestCaseLog]) -> None
+    def __init__(self, start_time, title, result_type, end_time=None, logs=None):
+        # type:(datetime, str, ResultType, Optional[datetime], Optional[List[TestCaseLog]]) -> None
         self.StartTime = start_time
         self.Title = title
         self.ResultType = result_type
