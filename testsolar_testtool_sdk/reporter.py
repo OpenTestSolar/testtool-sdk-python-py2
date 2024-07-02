@@ -27,7 +27,8 @@ class Reporter:
         初始化报告工具类
         :param pipe_io: 可选的管道，用于测试
         """
-        self.lock_file = "/tmp/testsolar_reporter.lock"
+        home = os.path.expanduser("~")
+        self.lock_file = os.path.join(home, "testsolar_reporter.lock")
 
         if pipe_io:
             self.pipe_io = pipe_io
