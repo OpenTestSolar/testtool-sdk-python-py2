@@ -12,7 +12,7 @@ def get_requires(req_file):
 
 setup(
     name='testsolar-testtool-sdk-py2',
-    version='0.1.9',
+    version='0.2.0',
     author='asiazhang',
     author_email='asiazhang2002@gmail.com',
     description='Python2 SDK for TestSolar testtool',
@@ -20,7 +20,7 @@ setup(
     packages=find_packages(),
     python_requires='>=2.7, <3',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',

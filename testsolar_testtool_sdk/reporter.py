@@ -20,8 +20,6 @@ PIPE_WRITER = 3
 
 
 class Reporter:
-    def __enter__(self):
-        return self
 
     def __init__(self, pipe_io=None):
         # type: (Optional[BinaryIO]) -> None
@@ -36,9 +34,6 @@ class Reporter:
         else:
             self.pipe_io = os.fdopen(PIPE_WRITER, "wb")
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close()
-
     def report_load_result(self, load_result):
         # type: (LoadResult) -> None
         with portalocker.Lock(self.lock_file, timeout=60):
@@ -48,10 +43,6 @@ class Reporter:
         # type: (TestResult) -> None
         with portalocker.Lock(self.lock_file, timeout=60):
             self._send_json(case_result)
-
-    def close(self):
-        if self.pipe_io:
-            self.pipe_io.close()
 
     def _send_json(self, result):
         # type: (Any) -> None
