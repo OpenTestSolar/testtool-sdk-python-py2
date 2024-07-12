@@ -8,9 +8,9 @@ def test_load_param_entry():
 
     r = load_param_entry(entry_file)
 
-    assert r.TaskId == 'afre89u789'
-    assert r.ProjectPath == '/test/data/3289'
-    assert r.FileReportPath == '/test/data/3289/report'
+    assert r.TaskId == "afre89u789"
+    assert r.ProjectPath == "/test/data/3289"
+    assert r.FileReportPath == "/test/data/3289/report"
     assert r.Collectors == ["aa", "bb"]
     assert r.Context == {"aa": "bb"}
     assert r.TestSelectors == ["aaa", "bbb"]

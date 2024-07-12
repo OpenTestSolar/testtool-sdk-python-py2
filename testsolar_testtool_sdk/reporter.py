@@ -1,12 +1,14 @@
 # coding=utf-8
-
+import hashlib
+import io
 import logging
 import os
 import struct
+from abc import ABCMeta, abstractmethod
 
 import portalocker
 import simplejson
-from typing import Optional, BinaryIO, Any, Dict, Union
+from typing import Optional, BinaryIO, Any
 
 from testsolar_testtool_sdk.model.encoder import DateTimeEncoder
 from testsolar_testtool_sdk.model.load import LoadResult
@@ -19,8 +21,21 @@ MAGIC_NUMBER = 0x1234ABCD
 PIPE_WRITER = 3
 
 
-class Reporter:
+class BaseReporter(object):
+    __metaclass__ = ABCMeta
 
+    @abstractmethod
+    def report_load_result(self, load_result):
+        # type: (LoadResult) ->None
+        pass
+
+    @abstractmethod
+    def report_case_result(self, case_result):
+        # type: (TestResult) -> None
+        pass
+
+
+class Reporter(BaseReporter):
     def __init__(self, pipe_io=None):
         # type: (Optional[BinaryIO]) -> None
         """
@@ -65,11 +80,49 @@ class Reporter:
         self.pipe_io.flush()
 
 
-def _object_to_dict(obj):
-    # type: (Any) -> Union[Dict, str]
-    return simplejson.dumps(obj, cls=DateTimeEncoder)
+PipeReporter = Reporter
 
 
-def convert_to_json(result):
-    # type: (Any) -> str
-    return simplejson.dumps(result, cls=DateTimeEncoder, ensure_ascii=False)
+class FileReporter(BaseReporter):
+    def __init__(self, report_path):
+        # type: (str) -> None
+        self.report_path = report_path
+
+    def report_load_result(self, load_result):
+        # type: (LoadResult) ->None
+        out_file = os.path.join(self.report_path, "result.json")
+        logging.debug("Writing load results to {}".format(out_file))
+        with io.open(out_file, "w", encoding="utf-8") as f:
+            data = convert_to_json(load_result, pretty=True)
+            f.write(data)
+
+    def report_case_result(self, case_result):
+        # type: (TestResult) -> None
+        retry_id = case_result.Test.Attributes.get("retry", "0")
+        filename = (
+            hashlib.md5(
+                "{}.{}".format(case_result.Test.Name, retry_id).encode("utf-8")
+            ).hexdigest()
+            + ".json"
+        )
+        out_file = os.path.join(self.report_path, filename)
+
+        logging.debug(
+            "Writing case [{}] results to {}".format(
+                "{}.{}".format(case_result.Test.Name, retry_id), out_file
+            )
+        )
+
+        with io.open(out_file, "w", encoding="utf-8") as f:
+            data = convert_to_json(case_result, pretty=True)
+            f.write(data)
+
+
+def convert_to_json(result, pretty=False):
+    # type: (Any, bool) -> str
+    if pretty:
+        return simplejson.dumps(
+            result, cls=DateTimeEncoder, indent=2, ensure_ascii=False
+        )
+    else:
+        return simplejson.dumps(result, cls=DateTimeEncoder, ensure_ascii=False)
