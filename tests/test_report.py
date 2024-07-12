@@ -21,7 +21,12 @@ from testsolar_testtool_sdk.model.testresult import (
     AttachmentType,
 )
 from testsolar_testtool_sdk.pipe_reader import read_result, deserialize_data
-from testsolar_testtool_sdk.reporter import convert_to_json, PipeReporter, FileReporter, BaseReporter
+from testsolar_testtool_sdk.reporter import (
+    convert_to_json,
+    PipeReporter,
+    FileReporter,
+    BaseReporter,
+)
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -37,11 +42,7 @@ def generate_demo_load_result():
     r = LoadResult([], [])  # type: LoadResult
 
     for x in range(10):
-        r.Tests.append(
-            TestCase(
-                "mumu/mu.py/test_case_name_%d_p1" % x, {"tag": "P1"}
-            )
-        )
+        r.Tests.append(TestCase("mumu/mu.py/test_case_name_%d_p1" % x, {"tag": "P1"}))
 
     for x in range(5):
         r.LoadErrors.append(
@@ -87,12 +88,11 @@ def generate_testcase_log():
     return TestCaseLog(
         start,
         LogLevel.INFO,
-        "采集器：coll-imrv6szb当前状态为0，预期状态为1，状态不一致（0:处理中,1:正常） -> %s" % get_random_unicode(20),
-
+        "采集器：coll-imrv6szb当前状态为0，预期状态为1，状态不一致（0:处理中,1:正常） -> %s"
+        % get_random_unicode(20),
         TestCaseAssertError("AAA", "BBB", "AAA is not BBB"),
         None,
-        [
-        ],
+        [],
     )
 
 
@@ -123,10 +123,14 @@ def test_report_load_result_by_pipe():
     pipe_io.seek(0)
 
     loaded = read_result(pipe_io)
-    assert len(loaded.get('LoadErrors')) == len(load_result.LoadErrors)
-    assert len(loaded.get('Tests')) == len(load_result.Tests)
-    assert loaded.get('LoadErrors')[0].get('name') == load_result.LoadErrors[0].name.decode("utf-8")
-    assert loaded.get('LoadErrors')[0].get('message') == load_result.LoadErrors[0].message.decode("utf-8")
+    assert len(loaded.get("LoadErrors")) == len(load_result.LoadErrors)
+    assert len(loaded.get("Tests")) == len(load_result.Tests)
+    assert loaded.get("LoadErrors")[0].get("name") == load_result.LoadErrors[
+        0
+    ].name.decode("utf-8")
+    assert loaded.get("LoadErrors")[0].get("message") == load_result.LoadErrors[
+        0
+    ].message.decode("utf-8")
 
 
 def test_report_load_result_by_file():
@@ -143,10 +147,14 @@ def test_report_load_result_by_file():
 
         with open(os.path.join(tmp_dir, "result.json"), "r") as f:
             loaded = deserialize_data(f.read())
-            assert len(loaded.get('LoadErrors')) == len(load_result.LoadErrors)
-            assert len(loaded.get('Tests')) == len(load_result.Tests)
-            assert loaded.get('LoadErrors')[0].get('name') == load_result.LoadErrors[0].name.decode("utf-8")
-            assert loaded.get('LoadErrors')[0].get('message') == load_result.LoadErrors[0].message.decode("utf-8")
+            assert len(loaded.get("LoadErrors")) == len(load_result.LoadErrors)
+            assert len(loaded.get("Tests")) == len(load_result.Tests)
+            assert loaded.get("LoadErrors")[0].get("name") == load_result.LoadErrors[
+                0
+            ].name.decode("utf-8")
+            assert loaded.get("LoadErrors")[0].get("message") == load_result.LoadErrors[
+                0
+            ].message.decode("utf-8")
     finally:
         shutil.rmtree(tmp_dir)
 
@@ -163,13 +171,13 @@ def test_datetime_formatted():
     run_case_result = generate_test_result(0)
     data = convert_to_json(run_case_result)
     tr = json.loads(data)
-    assert tr['StartTime'].endswith("Z")
-    assert tr['EndTime'].endswith("Z")
+    assert tr["StartTime"].endswith("Z")
+    assert tr["EndTime"].endswith("Z")
 
-    assert tr['Steps'][0]['StartTime'].endswith("Z")
-    assert tr['Steps'][0]['EndTime'].endswith("Z")
+    assert tr["Steps"][0]["StartTime"].endswith("Z")
+    assert tr["Steps"][0]["EndTime"].endswith("Z")
 
-    assert tr['Steps'][0]['Logs'][0]['Time'].endswith("Z")
+    assert tr["Steps"][0]["Logs"][0]["Time"].endswith("Z")
 
 
 def test_report_run_case_result_with_pipe():
@@ -192,15 +200,15 @@ def test_report_run_case_result_with_pipe():
     # 检查管道中的数据，确保每个用例的魔数和数据长度还有数据正确
     pipe_io.seek(0)
     r1 = read_result(pipe_io)
-    assert r1.get('ResultType') == ResultType.SUCCEED
+    assert r1.get("ResultType") == ResultType.SUCCEED
     r2 = read_result(pipe_io)
-    assert r2.get('ResultType') == ResultType.SUCCEED
+    assert r2.get("ResultType") == ResultType.SUCCEED
     r3 = read_result(pipe_io)
-    assert r3.get('ResultType') == ResultType.SUCCEED
+    assert r3.get("ResultType") == ResultType.SUCCEED
     r4 = read_result(pipe_io)
-    assert r4.get('ResultType') == ResultType.SUCCEED
+    assert r4.get("ResultType") == ResultType.SUCCEED
     r5 = read_result(pipe_io)
-    assert r5.get('ResultType') == ResultType.SUCCEED
+    assert r5.get("ResultType") == ResultType.SUCCEED
 
 
 def test_report_run_case_result_with_file():
@@ -229,7 +237,7 @@ def test_report_run_case_result_with_file():
                 with open(os.path.join(dirpath, filename), "r") as f:
                     tr = deserialize_data(f.read())
 
-                    assert tr.get('ResultType') == ResultType.SUCCEED
+                    assert tr.get("ResultType") == ResultType.SUCCEED
     finally:
         shutil.rmtree(tmp_dir)
 
@@ -241,29 +249,35 @@ def test_convert_to_json_with_custom_encoder():
         ResultType.SUCCEED,
         "ファイルが見つかりません",
         datetime.utcnow(),
-        [TestCaseStep(
-            start_time=datetime.utcnow(),
-            title="hello world",
-            result_type=ResultType.SUCCEED,
-            end_time=datetime.utcnow(),
-            logs=[
-                TestCaseLog(
-                    time=datetime.utcnow(),
-                    level=LogLevel.INFO,
-                    content="hello world 1",
-                    assert_error=TestCaseAssertError("AAA", "BBB", "AAA is not BBB"),
-                    runtime_error=TestCaseRuntimeError("AAA", "BBB"),
-                    attachments=[Attachment(
-                        name="attachment 1",
-                        attachment_type=AttachmentType.URL,
-                        url="https://example.com",
-                    )]
-                )
-            ]
-        )],
+        [
+            TestCaseStep(
+                start_time=datetime.utcnow(),
+                title="hello world",
+                result_type=ResultType.SUCCEED,
+                end_time=datetime.utcnow(),
+                logs=[
+                    TestCaseLog(
+                        time=datetime.utcnow(),
+                        level=LogLevel.INFO,
+                        content="hello world 1",
+                        assert_error=TestCaseAssertError(
+                            "AAA", "BBB", "AAA is not BBB"
+                        ),
+                        runtime_error=TestCaseRuntimeError("AAA", "BBB"),
+                        attachments=[
+                            Attachment(
+                                name="attachment 1",
+                                attachment_type=AttachmentType.URL,
+                                url="https://example.com",
+                            )
+                        ],
+                    )
+                ],
+            )
+        ],
     )
 
     re = json.loads(convert_to_json(tr))
 
-    assert len(re['Steps']) == 1
-    assert re['Steps'][0]['Logs'][0]['RuntimeError']['Summary'] == 'AAA'
+    assert len(re["Steps"]) == 1
+    assert re["Steps"][0]["Logs"][0]["RuntimeError"]["Summary"] == "AAA"

@@ -1,4 +1,10 @@
-from testsolar_testtool_sdk.model.testresult import TestResult, TestCase, ResultType, TestCaseLog, LogLevel
+from testsolar_testtool_sdk.model.testresult import (
+    TestResult,
+    TestCase,
+    ResultType,
+    TestCaseLog,
+    LogLevel,
+)
 from datetime import datetime
 
 
@@ -9,7 +15,7 @@ def test_is_final():
         result_type=ResultType.FAILED,
         message="Test failed",
         end_time=datetime.now(),
-        steps=[]
+        steps=[],
     )
 
     assert tr.is_final()
@@ -22,7 +28,7 @@ def test_is_not_final():
         result_type=ResultType.RUNNING,
         message="Test failed",
         end_time=datetime.now(),
-        steps=[]
+        steps=[],
     )
 
     assert not tr.is_final()
