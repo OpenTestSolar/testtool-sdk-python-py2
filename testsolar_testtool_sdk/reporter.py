@@ -8,7 +8,7 @@ from abc import ABCMeta, abstractmethod
 
 import portalocker
 import simplejson
-from typing import Optional, BinaryIO, Any, Dict, Union
+from typing import Optional, BinaryIO, Any
 
 from testsolar_testtool_sdk.model.encoder import DateTimeEncoder
 from testsolar_testtool_sdk.model.load import LoadResult
@@ -116,11 +116,6 @@ class FileReporter(BaseReporter):
         with io.open(out_file, "w", encoding="utf-8") as f:
             data = convert_to_json(case_result, pretty=True)
             f.write(data)
-
-
-def object_to_dict(obj):
-    # type: (Any) -> Union[Dict, str]
-    return simplejson.dumps(obj, cls=DateTimeEncoder)
 
 
 def convert_to_json(result, pretty=False):
