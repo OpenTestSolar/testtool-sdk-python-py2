@@ -3,6 +3,9 @@
 import io
 import json
 import logging
+import os
+import shutil
+import tempfile
 import threading
 from datetime import datetime, timedelta
 
@@ -17,8 +20,8 @@ from testsolar_testtool_sdk.model.testresult import (
     Attachment,
     AttachmentType,
 )
-from testsolar_testtool_sdk.pipe_reader import read_result
-from testsolar_testtool_sdk.reporter import Reporter, convert_to_json
+from testsolar_testtool_sdk.pipe_reader import read_result, deserialize_data
+from testsolar_testtool_sdk.reporter import convert_to_json, PipeReporter, FileReporter, BaseReporter
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -33,14 +36,14 @@ def generate_demo_load_result():
     # type: () -> LoadResult
     r = LoadResult([], [])  # type: LoadResult
 
-    for x in range(40):
+    for x in range(10):
         r.Tests.append(
             TestCase(
                 "mumu/mu.py/test_case_name_%d_p1" % x, {"tag": "P1"}
             )
         )
 
-    for x in range(20):
+    for x in range(5):
         r.LoadErrors.append(
             LoadError(
                 name="load error %s" % x,
@@ -105,11 +108,11 @@ def generate_testcase_step():
     )
 
 
-def test_report_load_result():
+def test_report_load_result_by_pipe():
     # type: () -> None
     # 创建一个Reporter实例
     pipe_io = io.BytesIO()
-    reporter = Reporter(pipe_io=pipe_io)
+    reporter = PipeReporter(pipe_io=pipe_io)
     # 创建一个LoadResult实例
     load_result = generate_demo_load_result()
 
@@ -126,10 +129,32 @@ def test_report_load_result():
     assert loaded.get('LoadErrors')[0].get('message') == load_result.LoadErrors[0].message.decode("utf-8")
 
 
-def send_test_result(reporter):
-    # type: (Reporter) -> None
+def test_report_load_result_by_file():
+    # type: () -> None
+    # 创建一个Reporter实例
+    tmp_dir = tempfile.mkdtemp()
+    try:
+        reporter = FileReporter(tmp_dir)
+        # 创建一个LoadResult实例
+        load_result = generate_demo_load_result()
+
+        # 调用report_load_result方法
+        reporter.report_load_result(load_result)
+
+        with open(os.path.join(tmp_dir, "result.json"), "r") as f:
+            loaded = deserialize_data(f.read())
+            assert len(loaded.get('LoadErrors')) == len(load_result.LoadErrors)
+            assert len(loaded.get('Tests')) == len(load_result.Tests)
+            assert loaded.get('LoadErrors')[0].get('name') == load_result.LoadErrors[0].name.decode("utf-8")
+            assert loaded.get('LoadErrors')[0].get('message') == load_result.LoadErrors[0].message.decode("utf-8")
+    finally:
+        shutil.rmtree(tmp_dir)
+
+
+def send_test_result(reporter, index=0):
+    # type: (BaseReporter, int) -> None
     test_results = []
-    run_case_result = generate_test_result(0)
+    run_case_result = generate_test_result(index)
     test_results.append(run_case_result)
     reporter.report_case_result(run_case_result)
 
@@ -147,11 +172,11 @@ def test_datetime_formatted():
     assert tr['Steps'][0]['Logs'][0]['Time'].endswith("Z")
 
 
-def test_report_run_case_result():
+def test_report_run_case_result_with_pipe():
     threads = []
     # 创建一个Reporter实例
     pipe_io = io.BytesIO()
-    reporter = Reporter(pipe_io=pipe_io)
+    reporter = PipeReporter(pipe_io=pipe_io)
     # 创建五个LoadResult实例并发调用report_run_case_result方法
     for i in range(5):
         # 创建线程
@@ -176,6 +201,37 @@ def test_report_run_case_result():
     assert r4.get('ResultType') == ResultType.SUCCEED
     r5 = read_result(pipe_io)
     assert r5.get('ResultType') == ResultType.SUCCEED
+
+
+def test_report_run_case_result_with_file():
+    threads = []
+    # 创建一个Reporter实例
+    tmp_dir = tempfile.mkdtemp()
+    try:
+        reporter = FileReporter(tmp_dir)
+        # 创建五个LoadResult实例并发调用report_run_case_result方法
+        for i in range(5):
+            # 创建线程
+            t = threading.Thread(target=send_test_result, args=(reporter, i))
+            # 将线程添加到线程列表
+            threads.append(t)
+            # 启动线程
+            t.start()
+
+        for t in threads:
+            t.join()
+
+        # 检查生成的文件是否符合要求
+        for dirpath, _, filenames in os.walk(tmp_dir):
+            assert len(filenames) == 5
+
+            for filename in filenames:
+                with open(os.path.join(dirpath, filename), "r") as f:
+                    tr = deserialize_data(f.read())
+
+                    assert tr.get('ResultType') == ResultType.SUCCEED
+    finally:
+        shutil.rmtree(tmp_dir)
 
 
 def test_convert_to_json_with_custom_encoder():

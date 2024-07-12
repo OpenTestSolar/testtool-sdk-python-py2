@@ -2,8 +2,15 @@
 from datetime import datetime
 
 from testsolar_testtool_sdk.model.load import LoadResult, LoadError
-from testsolar_testtool_sdk.model.testresult import TestCase, TestResult, TestCaseStep, TestCaseLog, TestCaseAssertError, \
-    TestCaseRuntimeError, Attachment
+from testsolar_testtool_sdk.model.testresult import (
+    TestCase,
+    TestResult,
+    TestCaseStep,
+    TestCaseLog,
+    TestCaseAssertError,
+    TestCaseRuntimeError,
+    Attachment,
+)
 
 import simplejson
 

@@ -3,7 +3,15 @@ from typing import Dict, List
 
 
 class EntryParam:
-    def __init__(self, task_id, project_path, file_report_path, collectors, context, test_selectors):
+    def __init__(
+        self,
+        task_id,
+        project_path,
+        file_report_path,
+        collectors,
+        context,
+        test_selectors,
+    ):
         # type: (str, str, str, List[str], Dict[str, str], List[str]) -> None
         self.TaskId = task_id
         self.ProjectPath = project_path
@@ -15,14 +23,14 @@ class EntryParam:
 
 def load_param_entry(entry_path):
     # type: (str) -> EntryParam
-    with open(entry_path, 'r') as f:
+    with open(entry_path, "r") as f:
         raw = json.load(f)
 
         return EntryParam(
-            raw.get('TaskId'),
-            raw.get('ProjectPath'),
-            raw.get('FileReportPath'),
-            raw.get('Collectors'),
-            raw.get('Context'),
-            raw.get('TestSelectors')
+            raw.get("TaskId"),
+            raw.get("ProjectPath"),
+            raw.get("FileReportPath"),
+            raw.get("Collectors"),
+            raw.get("Context"),
+            raw.get("TestSelectors"),
         )

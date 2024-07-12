@@ -13,7 +13,13 @@ def read_result(pipe_io):
     # type: (BinaryIO) -> Dict
     result_data = _read_model(pipe_io)
 
-    return simplejson.loads(result_data, encoding=None)
+    return deserialize_data(result_data)
+
+
+def deserialize_data(result_data):
+    # type: (str) -> Dict
+
+    return simplejson.loads(result_data, encoding="utf-8")
 
 
 def _read_model(pipe_io):
