@@ -7,8 +7,8 @@ setup(
     author_email='asiazhang2002@gmail.com',
     description='Python2 SDK for TestSolar testtool',
     url='https://github.com/OpenTestSolar/testtool-sdk-python-py2',
-    package_dir={'': 'src/testsolar_testtool_sdk_py2'},
-    packages=find_packages(where='src/testsolar_testtool_sdk_py2'),
+    package_dir={'': 'src'},
+    packages=find_packages(where='src'),
     python_requires='>=2.7',
     classifiers=[
         'Development Status :: 4 - Beta',

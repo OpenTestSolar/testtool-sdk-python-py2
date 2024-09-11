@@ -20,8 +20,8 @@ jobs:
       run: |
         mv pyproject.toml pyproject.toml.1
         python -m pip install --upgrade pip setuptools wheel
-        pip install pytest pytest-cov
-        pip install -e .
+        python -m pip install pytest pytest-cov
+        python -m pip install -e .
     - name: Test with pytest
       run: |
         pytest --durations=5 --cov=. --cov-fail-under=90 --cov-report term -vv
