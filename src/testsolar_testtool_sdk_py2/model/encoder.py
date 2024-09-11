@@ -1,8 +1,8 @@
 # coding=utf-8
 from datetime import datetime
 
-from testsolar_testtool_sdk.model.load import LoadResult, LoadError
-from testsolar_testtool_sdk.model.testresult import (
+from testsolar_testtool_sdk_py2.model.load import LoadResult, LoadError
+from testsolar_testtool_sdk_py2.model.testresult import (
     TestCase,
     TestResult,
     TestCaseStep,

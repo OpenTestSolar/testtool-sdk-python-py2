@@ -1,4 +1,0 @@
-portalocker<2
-typing
-enum34
-simplejson

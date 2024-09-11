@@ -4,7 +4,6 @@ TestSolar Python测试工具SDK，用于支持`Python2`。由于公司内部还�
 
 注意：
 
-- 需要 Python <= 2.7
 - 如果需要使用`Python3`，请访问：https://github.com/OpenTestSolar/testtool-sdk-python
 
 ## 如何使用

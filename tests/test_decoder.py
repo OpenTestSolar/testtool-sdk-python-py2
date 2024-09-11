@@ -1,4 +1,4 @@
-from testsolar_testtool_sdk.decoder import decode_env_value
+from testsolar_testtool_sdk_py2.decoder import decode_env_value
 
 
 def test_decode_env_value():

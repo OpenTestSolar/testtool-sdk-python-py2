@@ -1,15 +1,5 @@
 from setuptools import setup, find_packages
 
-from pkg_resources import parse_requirements
-
-
-def get_requires(req_file):
-    # type: (str) -> list
-    with open(req_file, 'r') as f:
-        install_requires = [str(req) for req in parse_requirements(f)]
-        return install_requires
-
-
 setup(
     name='testsolar-testtool-sdk-py2',
     version='0.3.0',
@@ -17,8 +7,9 @@ setup(
     author_email='asiazhang2002@gmail.com',
     description='Python2 SDK for TestSolar testtool',
     url='https://github.com/OpenTestSolar/testtool-sdk-python-py2',
-    packages=find_packages(),
-    python_requires='>=2.7, <3',
+    package_dir={'': 'src'},
+    packages=find_packages(where='src'),
+    python_requires='>=2.7',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
@@ -28,7 +19,5 @@ setup(
     ],
     license='Apache License 2.0',
     keywords='testsolar',
-    install_requires=get_requires('requirements.txt'),
-    tests_require=get_requires('requirements-dev.txt'),
     test_suite='tests',
 )

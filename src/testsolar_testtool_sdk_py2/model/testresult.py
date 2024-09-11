@@ -109,9 +109,7 @@ class TestCaseStep:
 class TestResult:
     __test__ = False
 
-    def __init__(
-        self, test, start_time, result_type, message, end_time=None, steps=None
-    ):
+    def __init__(self, test, start_time, result_type, message, end_time=None, steps=None):
         # type: (TestCase, datetime, ResultType, str, Optional[datetime], Optional[List[TestCaseStep]]) -> None
         self.Test = test
         self.StartTime = start_time
