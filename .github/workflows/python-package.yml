@@ -20,6 +20,7 @@ jobs:
       run: curl -LsSf https://astral.sh/uv/install.sh | sh
     - name: Install dependencies
       run: |
+        sed -i 's/requires-python = ">=3.7"/requires-python = ">=2.7"/g' pyproject.toml
         pip install pytest pytest-cov setuptools
         pip install -e .
     - name: Test with pytest
