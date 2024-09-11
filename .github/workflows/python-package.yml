@@ -18,6 +18,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Install dependencies
       run: |
+        cat pyproject.toml
         mv pyproject.toml pyproject.toml.1
         python -m pip install pytest pytest-cov enum34 setuptools wheel portalocker<2 simplejson typing
         python -m pip install -e .
