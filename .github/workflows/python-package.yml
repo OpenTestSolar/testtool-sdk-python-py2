@@ -19,7 +19,7 @@ jobs:
     - name: Install dependencies
       run: |
         mv pyproject.toml pyproject.toml.1
-        python -m pip install pytest pytest-cov enum34 setuptools wheel "portalocker<2" simplejson typing
+        python -m pip install pytest pytest-cov enum34 setuptools wheel "portalocker<2" simplejson typing future
         python -m pip install -e .
     - name: Test with pytest
       run: |

@@ -1,6 +1,5 @@
 # coding=utf-8
 
-import io
 import json
 import logging
 import os
@@ -8,6 +7,7 @@ import shutil
 import tempfile
 import threading
 from datetime import datetime, timedelta
+from builtins import str
 
 from testsolar_testtool_sdk_py2.model.load import LoadResult, LoadError
 from testsolar_testtool_sdk_py2.model.testresult import ResultType, LogLevel, TestCase
@@ -122,8 +122,8 @@ def test_report_load_result_by_file():
             loaded = deserialize_data(f.read())
             assert len(loaded.get("LoadErrors")) == len(load_result.LoadErrors)
             assert len(loaded.get("Tests")) == len(load_result.Tests)
-            assert loaded.get("LoadErrors")[0].get("name") == load_result.LoadErrors[0].name
-            assert loaded.get("LoadErrors")[0].get("message") == load_result.LoadErrors[0].message
+            assert loaded.get("LoadErrors")[0].get("name") == str(load_result.LoadErrors[0].name)
+            assert loaded.get("LoadErrors")[0].get("message") == str(load_result.LoadErrors[0].message)
     finally:
         shutil.rmtree(tmp_dir)
 
