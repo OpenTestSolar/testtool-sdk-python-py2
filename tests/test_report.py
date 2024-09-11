@@ -20,12 +20,10 @@ from testsolar_testtool_sdk_py2.model.testresult import (
     Attachment,
     AttachmentType,
 )
-from testsolar_testtool_sdk_py2.pipe_reader import read_result, deserialize_data
 from testsolar_testtool_sdk_py2.reporter import (
     convert_to_json,
-    PipeReporter,
     FileReporter,
-    BaseReporter,
+    BaseReporter, deserialize_data,
 )
 
 logger = logging.getLogger(__name__)
@@ -108,27 +106,6 @@ def generate_testcase_step():
     )
 
 
-def test_report_load_result_by_pipe():
-    # type: () -> None
-    # 创建一个Reporter实例
-    pipe_io = io.BytesIO()
-    reporter = PipeReporter(pipe_io=pipe_io)
-    # 创建一个LoadResult实例
-    load_result = generate_demo_load_result()
-
-    # 调用report_load_result方法
-    reporter.report_load_result(load_result)
-
-    # 检查管道中的魔数
-    pipe_io.seek(0)
-
-    loaded = read_result(pipe_io)
-    assert len(loaded.get("LoadErrors")) == len(load_result.LoadErrors)
-    assert len(loaded.get("Tests")) == len(load_result.Tests)
-    assert loaded.get("LoadErrors")[0].get("name") == load_result.LoadErrors[0].name
-    assert loaded.get("LoadErrors")[0].get("message") == load_result.LoadErrors[0].message
-
-
 def test_report_load_result_by_file():
     # type: () -> None
     # 创建一个Reporter实例
@@ -170,37 +147,6 @@ def test_datetime_formatted():
     assert tr["Steps"][0]["EndTime"].endswith("Z")
 
     assert tr["Steps"][0]["Logs"][0]["Time"].endswith("Z")
-
-
-def test_report_run_case_result_with_pipe():
-    threads = []
-    # 创建一个Reporter实例
-    pipe_io = io.BytesIO()
-    reporter = PipeReporter(pipe_io=pipe_io)
-    # 创建五个LoadResult实例并发调用report_run_case_result方法
-    for i in range(5):
-        # 创建线程
-        t = threading.Thread(target=send_test_result, args=(reporter,))
-        # 将线程添加到线程列表
-        threads.append(t)
-        # 启动线程
-        t.start()
-
-    for t in threads:
-        t.join()
-
-    # 检查管道中的数据，确保每个用例的魔数和数据长度还有数据正确
-    pipe_io.seek(0)
-    r1 = read_result(pipe_io)
-    assert r1.get("ResultType") == ResultType.SUCCEED
-    r2 = read_result(pipe_io)
-    assert r2.get("ResultType") == ResultType.SUCCEED
-    r3 = read_result(pipe_io)
-    assert r3.get("ResultType") == ResultType.SUCCEED
-    r4 = read_result(pipe_io)
-    assert r4.get("ResultType") == ResultType.SUCCEED
-    r5 = read_result(pipe_io)
-    assert r5.get("ResultType") == ResultType.SUCCEED
 
 
 def test_report_run_case_result_with_file():
