@@ -35,8 +35,8 @@ line-length = 100
 
 [tool.uv]
 dev-dependencies = [
-    "future>=1.0.0",
     "pytest-cov>=4.1.0",
     "pytest>=7",
     "setuptools>=68.0.0",
+    "six>=1.16.0",
 ]

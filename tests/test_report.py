@@ -7,7 +7,7 @@ import shutil
 import tempfile
 import threading
 from datetime import datetime, timedelta
-from builtins import str
+import six
 
 from testsolar_testtool_sdk_py2.model.load import LoadResult, LoadError
 from testsolar_testtool_sdk_py2.model.testresult import ResultType, LogLevel, TestCase
@@ -122,8 +122,14 @@ def test_report_load_result_by_file():
             loaded = deserialize_data(f.read())
             assert len(loaded.get("LoadErrors")) == len(load_result.LoadErrors)
             assert len(loaded.get("Tests")) == len(load_result.Tests)
-            assert loaded.get("LoadErrors")[0].get("name") == str(load_result.LoadErrors[0].name)
-            assert loaded.get("LoadErrors")[0].get("message") == str(load_result.LoadErrors[0].message)
+            name = load_result.LoadErrors[0].name
+            if isinstance(name, six.binary_type):
+                name = name.decode("utf-8")
+            message = load_result.LoadErrors[0].message
+            if isinstance(message, six.binary_type):
+                message = message.decode("utf-8")
+            assert loaded.get("LoadErrors")[0].get("name") == name
+            assert loaded.get("LoadErrors")[0].get("message") == message
     finally:
         shutil.rmtree(tmp_dir)
 

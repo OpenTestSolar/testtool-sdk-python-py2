@@ -101,15 +101,6 @@ wheels = [
 ]
 
 [[package]]
-name = "future"
-version = "1.0.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/a7/b2/4140c69c6a66432916b26158687e821ba631a4c9273c474343badf84d3ba/future-1.0.0.tar.gz", hash = "sha256:bd2968309307861edae1458a4f8a4f3598c03be43b97521076aebf5d94c07b05", size = 1228490 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/da/71/ae30dadffc90b9006d77af76b393cb9dfbfc9629f339fc1574a1c52e6806/future-1.0.0-py3-none-any.whl", hash = "sha256:929292d34f5872e70396626ef385ec22355a1fae8ad29e1a734c3e43f9fbc216", size = 491326 },
-]
-
-[[package]]
 name = "importlib-metadata"
 version = "6.7.0"
 source = { registry = "https://pypi.org/simple" }
@@ -291,6 +282,15 @@ wheels = [
 ]
 
 [[package]]
+name = "six"
+version = "1.16.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/71/39/171f1c67cd00715f190ba0b100d606d440a28c93c7714febeca8b79af85e/six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926", size = 34041 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254", size = 11053 },
+]
+
+[[package]]
 name = "testsolar-testtool-sdk-py2"
 version = "0.4.0"
 source = { editable = "." }
@@ -301,10 +301,10 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "future" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "setuptools" },
+    { name = "six" },
 ]
 
 [package.metadata]
@@ -316,10 +316,10 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "future", specifier = ">=1.0.0" },
     { name = "pytest", specifier = ">=7" },
     { name = "pytest-cov", specifier = ">=4.1.0" },
     { name = "setuptools", specifier = ">=68.0.0" },
+    { name = "six", specifier = ">=1.16.0" },
 ]
 
 [[package]]
