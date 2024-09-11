@@ -16,9 +16,11 @@ jobs:
       image: bitnami/python:2.7.18
     steps:
     - uses: actions/checkout@v4
+    - name: Set up uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
     - name: Install dependencies
       run: |
-        pip install -r requirements.txt
+        uv pip install -r requirements.txt
     - name: Test with pytest
       run: |
         pytest --durations=5 --cov=. --cov-fail-under=90 --cov-report term -vv
