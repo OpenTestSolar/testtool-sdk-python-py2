@@ -21,6 +21,7 @@ jobs:
         pip install pytest pytest-cov
         sed -i 's/requires-python = ">=3.7"/requires-python = ">=2.7"/g' pyproject.toml
         pip install setuptools
+        python -c "import setuptools; print(setuptools.__version__)"
         pip install -e .
     - name: Test with pytest
       run: |
