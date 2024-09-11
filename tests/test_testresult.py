@@ -1,4 +1,4 @@
-from testsolar_testtool_sdk.model.testresult import (
+from testsolar_testtool_sdk_py2.model.testresult import (
     TestResult,
     TestCase,
     ResultType,

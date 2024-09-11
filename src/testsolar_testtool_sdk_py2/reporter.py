@@ -100,9 +100,7 @@ class FileReporter(BaseReporter):
         # type: (TestResult) -> None
         retry_id = case_result.Test.Attributes.get("retry", "0")
         filename = (
-            hashlib.md5(
-                "{}.{}".format(case_result.Test.Name, retry_id).encode("utf-8")
-            ).hexdigest()
+            hashlib.md5("{}.{}".format(case_result.Test.Name, retry_id).encode("utf-8")).hexdigest()
             + ".json"
         )
         out_file = os.path.join(self.report_path, filename)
@@ -121,8 +119,6 @@ class FileReporter(BaseReporter):
 def convert_to_json(result, pretty=False):
     # type: (Any, bool) -> str
     if pretty:
-        return simplejson.dumps(
-            result, cls=DateTimeEncoder, indent=2, ensure_ascii=False
-        )
+        return simplejson.dumps(result, cls=DateTimeEncoder, indent=2, ensure_ascii=False)
     else:
         return simplejson.dumps(result, cls=DateTimeEncoder, ensure_ascii=False)

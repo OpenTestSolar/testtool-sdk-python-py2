@@ -1,6 +1,6 @@
 import os
 
-from testsolar_testtool_sdk.model.param import load_param_entry
+from testsolar_testtool_sdk_py2.model.param import load_param_entry
 
 
 def test_load_param_entry():

@@ -9,9 +9,9 @@ import tempfile
 import threading
 from datetime import datetime, timedelta
 
-from testsolar_testtool_sdk.model.load import LoadResult, LoadError
-from testsolar_testtool_sdk.model.testresult import ResultType, LogLevel, TestCase
-from testsolar_testtool_sdk.model.testresult import (
+from testsolar_testtool_sdk_py2.model.load import LoadResult, LoadError
+from testsolar_testtool_sdk_py2.model.testresult import ResultType, LogLevel, TestCase
+from testsolar_testtool_sdk_py2.model.testresult import (
     TestResult,
     TestCaseStep,
     TestCaseAssertError,
@@ -20,8 +20,8 @@ from testsolar_testtool_sdk.model.testresult import (
     Attachment,
     AttachmentType,
 )
-from testsolar_testtool_sdk.pipe_reader import read_result, deserialize_data
-from testsolar_testtool_sdk.reporter import (
+from testsolar_testtool_sdk_py2.pipe_reader import read_result, deserialize_data
+from testsolar_testtool_sdk_py2.reporter import (
     convert_to_json,
     PipeReporter,
     FileReporter,
@@ -125,12 +125,10 @@ def test_report_load_result_by_pipe():
     loaded = read_result(pipe_io)
     assert len(loaded.get("LoadErrors")) == len(load_result.LoadErrors)
     assert len(loaded.get("Tests")) == len(load_result.Tests)
-    assert loaded.get("LoadErrors")[0].get("name") == load_result.LoadErrors[
-        0
-    ].name.decode("utf-8")
-    assert loaded.get("LoadErrors")[0].get("message") == load_result.LoadErrors[
-        0
-    ].message.decode("utf-8")
+    assert loaded.get("LoadErrors")[0].get("name") == load_result.LoadErrors[0].name.decode("utf-8")
+    assert loaded.get("LoadErrors")[0].get("message") == load_result.LoadErrors[0].message.decode(
+        "utf-8"
+    )
 
 
 def test_report_load_result_by_file():
@@ -149,9 +147,9 @@ def test_report_load_result_by_file():
             loaded = deserialize_data(f.read())
             assert len(loaded.get("LoadErrors")) == len(load_result.LoadErrors)
             assert len(loaded.get("Tests")) == len(load_result.Tests)
-            assert loaded.get("LoadErrors")[0].get("name") == load_result.LoadErrors[
-                0
-            ].name.decode("utf-8")
+            assert loaded.get("LoadErrors")[0].get("name") == load_result.LoadErrors[0].name.decode(
+                "utf-8"
+            )
             assert loaded.get("LoadErrors")[0].get("message") == load_result.LoadErrors[
                 0
             ].message.decode("utf-8")
@@ -260,9 +258,7 @@ def test_convert_to_json_with_custom_encoder():
                         time=datetime.utcnow(),
                         level=LogLevel.INFO,
                         content="hello world 1",
-                        assert_error=TestCaseAssertError(
-                            "AAA", "BBB", "AAA is not BBB"
-                        ),
+                        assert_error=TestCaseAssertError("AAA", "BBB", "AAA is not BBB"),
                         runtime_error=TestCaseRuntimeError("AAA", "BBB"),
                         attachments=[
                             Attachment(
