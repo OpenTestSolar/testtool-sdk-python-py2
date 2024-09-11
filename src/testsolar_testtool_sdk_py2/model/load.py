@@ -1,6 +1,6 @@
 from typing import List
 
-from testsolar_testtool_sdk.model.testresult import TestCase
+from testsolar_testtool_sdk_py2.model.testresult import TestCase
 
 
 class LoadError:

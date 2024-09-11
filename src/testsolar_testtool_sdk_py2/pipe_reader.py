@@ -5,7 +5,7 @@ import struct
 import simplejson
 from typing import BinaryIO, Dict
 
-from testsolar_testtool_sdk.reporter import MAGIC_NUMBER
+from testsolar_testtool_sdk_py2.reporter import MAGIC_NUMBER
 
 
 # 从管道读取测试用例结果，仅供单元测试使用

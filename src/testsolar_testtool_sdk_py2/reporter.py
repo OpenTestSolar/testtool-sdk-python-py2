@@ -10,9 +10,9 @@ import portalocker
 import simplejson
 from typing import Optional, BinaryIO, Any
 
-from testsolar_testtool_sdk.model.encoder import DateTimeEncoder
-from testsolar_testtool_sdk.model.load import LoadResult
-from testsolar_testtool_sdk.model.testresult import TestResult
+from testsolar_testtool_sdk_py2.model.encoder import DateTimeEncoder
+from testsolar_testtool_sdk_py2.model.load import LoadResult
+from testsolar_testtool_sdk_py2.model.testresult import TestResult
 
 # 跟TestSolar uniSDK约定的管道上报魔数，避免乱序导致后续数据全部无法上报
 MAGIC_NUMBER = 0x1234ABCD
