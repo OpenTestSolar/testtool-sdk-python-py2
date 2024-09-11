@@ -297,6 +297,7 @@ source = { editable = "." }
 dependencies = [
     { name = "enum34" },
     { name = "simplejson" },
+    { name = "six" },
 ]
 
 [package.dev-dependencies]
@@ -304,13 +305,13 @@ dev = [
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "setuptools" },
-    { name = "six" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "enum34", specifier = ">=1.1.10" },
     { name = "simplejson", specifier = ">=3.19.3" },
+    { name = "six", specifier = ">=1.16.0" },
     { name = "typing", marker = "python_full_version < '3.5'", specifier = ">=3.10" },
 ]
 
@@ -319,7 +320,6 @@ dev = [
     { name = "pytest", specifier = ">=7" },
     { name = "pytest-cov", specifier = ">=4.1.0" },
     { name = "setuptools", specifier = ">=68.0.0" },
-    { name = "six", specifier = ">=1.16.0" },
 ]
 
 [[package]]
