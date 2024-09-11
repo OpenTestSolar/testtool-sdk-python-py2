@@ -125,10 +125,8 @@ def test_report_load_result_by_pipe():
     loaded = read_result(pipe_io)
     assert len(loaded.get("LoadErrors")) == len(load_result.LoadErrors)
     assert len(loaded.get("Tests")) == len(load_result.Tests)
-    assert loaded.get("LoadErrors")[0].get("name") == load_result.LoadErrors[0].name.decode("utf-8")
-    assert loaded.get("LoadErrors")[0].get("message") == load_result.LoadErrors[0].message.decode(
-        "utf-8"
-    )
+    assert loaded.get("LoadErrors")[0].get("name") == load_result.LoadErrors[0].name
+    assert loaded.get("LoadErrors")[0].get("message") == load_result.LoadErrors[0].message
 
 
 def test_report_load_result_by_file():
@@ -147,12 +145,8 @@ def test_report_load_result_by_file():
             loaded = deserialize_data(f.read())
             assert len(loaded.get("LoadErrors")) == len(load_result.LoadErrors)
             assert len(loaded.get("Tests")) == len(load_result.Tests)
-            assert loaded.get("LoadErrors")[0].get("name") == load_result.LoadErrors[0].name.decode(
-                "utf-8"
-            )
-            assert loaded.get("LoadErrors")[0].get("message") == load_result.LoadErrors[
-                0
-            ].message.decode("utf-8")
+            assert loaded.get("LoadErrors")[0].get("name") == load_result.LoadErrors[0].name
+            assert loaded.get("LoadErrors")[0].get("message") == load_result.LoadErrors[0].message
     finally:
         shutil.rmtree(tmp_dir)
 

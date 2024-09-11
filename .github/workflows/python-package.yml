@@ -20,7 +20,7 @@ jobs:
       run: curl -LsSf https://astral.sh/uv/install.sh | sh
     - name: Install dependencies
       run: |
-        uv pip install -r requirements.txt
+        uv pip install pytest pytest-cov setuptools
     - name: Test with pytest
       run: |
         pytest --durations=5 --cov=. --cov-fail-under=90 --cov-report term -vv
