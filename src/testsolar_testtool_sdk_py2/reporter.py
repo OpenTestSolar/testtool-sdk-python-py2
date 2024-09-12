@@ -44,8 +44,8 @@ class FileReporter(BaseReporter):
         # type: (TestResult) -> None
         retry_id = case_result.Test.Attributes.get("retry", "0")
         filename = (
-                hashlib.md5("{}.{}".format(case_result.Test.Name, retry_id).encode("utf-8")).hexdigest()
-                + ".json"
+            hashlib.md5("{}.{}".format(case_result.Test.Name, retry_id).encode("utf-8")).hexdigest()
+            + ".json"
         )
         out_file = os.path.join(self.report_path, filename)
 

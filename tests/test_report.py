@@ -23,7 +23,8 @@ from testsolar_testtool_sdk_py2.model.testresult import (
 from testsolar_testtool_sdk_py2.reporter import (
     convert_to_json,
     FileReporter,
-    BaseReporter, deserialize_data,
+    BaseReporter,
+    deserialize_data,
 )
 
 logger = logging.getLogger(__name__)

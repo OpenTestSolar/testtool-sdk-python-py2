@@ -15,4 +15,8 @@ class LoadResult:
         # type: (List[TestCase], List[LoadError]) -> None
         self.Tests = tests
         self.LoadErrors = load_errors
-        pass
+
+    def merge(self, other):
+        # type: (LoadResult) -> None
+        self.Tests.extend(other.Tests)
+        self.LoadErrors.extend(other.LoadErrors)
