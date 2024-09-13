@@ -112,7 +112,7 @@ def test_report_load_result_by_file():
     # 创建一个Reporter实例
     tmp_dir = tempfile.mkdtemp()
     try:
-        reporter = FileReporter(tmp_dir)
+        reporter = FileReporter(os.path.join(tmp_dir, "result.json"))
         # 创建一个LoadResult实例
         load_result = generate_demo_load_result()
 

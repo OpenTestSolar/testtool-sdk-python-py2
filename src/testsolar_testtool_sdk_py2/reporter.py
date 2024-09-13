@@ -34,9 +34,8 @@ class FileReporter(BaseReporter):
 
     def report_load_result(self, load_result):
         # type: (LoadResult) ->None
-        out_file = os.path.join(self.report_path, "result.json")
-        logging.debug("Writing load results to {}".format(out_file))
-        with io.open(out_file, "w", encoding="utf-8") as f:
+        logging.debug("Writing load results to {}".format(self.report_path))
+        with io.open(self.report_path, "w", encoding="utf-8") as f:
             data = convert_to_json(load_result, pretty=True)
             f.write(data)
 
@@ -44,8 +43,8 @@ class FileReporter(BaseReporter):
         # type: (TestResult) -> None
         retry_id = case_result.Test.Attributes.get("retry", "0")
         filename = (
-            hashlib.md5("{}.{}".format(case_result.Test.Name, retry_id).encode("utf-8")).hexdigest()
-            + ".json"
+                hashlib.md5("{}.{}".format(case_result.Test.Name, retry_id).encode("utf-8")).hexdigest()
+                + ".json"
         )
         out_file = os.path.join(self.report_path, filename)
 
