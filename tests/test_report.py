@@ -7,10 +7,11 @@ import shutil
 import tempfile
 import threading
 from datetime import datetime, timedelta
+
 import six
 
 from testsolar_testtool_sdk_py2.model.load import LoadResult, LoadError
-from testsolar_testtool_sdk_py2.model.testresult import ResultType, LogLevel, TestCase
+from testsolar_testtool_sdk_py2.model.testresult import ResultType, LogLevel, TestCase, convert_to_test_result
 from testsolar_testtool_sdk_py2.model.testresult import (
     TestResult,
     TestCaseStep,
@@ -30,6 +31,7 @@ from testsolar_testtool_sdk_py2.reporter import (
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
+from conftest import smart_str
 
 def get_random_unicode(length):
     # type: (int) -> str
@@ -189,7 +191,7 @@ def test_report_run_case_result_with_file():
 
 def test_convert_to_json_with_custom_encoder():
     tr = TestResult(
-        TestCase("mumu/mu.py/test_case_name_%s_p1", {"tag": "bbb"}),
+        TestCase("mumu/mu.py/test_case_name_中文_p1", {"tag": "bbb"}),
         datetime.utcnow(),
         ResultType.SUCCEED,
         "ファイルが見つかりません",
@@ -222,5 +224,34 @@ def test_convert_to_json_with_custom_encoder():
 
     re = json.loads(convert_to_json(tr))
 
-    assert len(re["Steps"]) == 1
-    assert re["Steps"][0]["Logs"][0]["RuntimeError"]["Summary"] == "AAA"
+    new_tr = convert_to_test_result(re)
+    assert smart_str(new_tr.Test.Name) == smart_str(tr.Test.Name)
+    assert new_tr.Test.Attributes == tr.Test.Attributes
+    assert (new_tr.StartTime - tr.StartTime) < timedelta(seconds=1)
+    assert (new_tr.EndTime - tr.EndTime) < timedelta(seconds=1)
+    assert new_tr.ResultType == tr.ResultType
+    assert smart_str(new_tr.Message) == smart_str(tr.Message)
+
+    assert len(new_tr.Steps) == 1
+
+    step = new_tr.Steps[0]
+    assert (step.StartTime - tr.Steps[0].StartTime) < timedelta(seconds=1)
+    assert (step.EndTime - tr.Steps[0].EndTime) < timedelta(seconds=1)
+    assert step.Title == tr.Steps[0].Title
+    assert step.ResultType == tr.Steps[0].ResultType
+
+    assert len(step.Logs) == 1
+    log = step.Logs[0]
+    assert (log.Time - tr.Steps[0].Logs[0].Time) < timedelta(seconds=1)
+    assert log.Level == tr.Steps[0].Logs[0].Level
+    assert log.Content == tr.Steps[0].Logs[0].Content
+    assert log.AssertError.Expect == tr.Steps[0].Logs[0].AssertError.Expect
+    assert log.AssertError.Actual == tr.Steps[0].Logs[0].AssertError.Actual
+    assert log.AssertError.Message == tr.Steps[0].Logs[0].AssertError.Message
+    assert log.RuntimeError.Summary == tr.Steps[0].Logs[0].RuntimeError.Summary
+    assert log.RuntimeError.Detail == tr.Steps[0].Logs[0].RuntimeError.Detail
+
+    assert len(log.Attachments) == 1
+    attachment = log.Attachments[0]
+    assert attachment.AttachmentType == tr.Steps[0].Logs[0].Attachments[0].AttachmentType
+

@@ -1,6 +1,8 @@
 # coding=utf-8
 from datetime import datetime
 
+import simplejson
+
 from testsolar_testtool_sdk_py2.model.load import LoadResult, LoadError
 from testsolar_testtool_sdk_py2.model.testresult import (
     TestCase,
@@ -11,8 +13,6 @@ from testsolar_testtool_sdk_py2.model.testresult import (
     TestCaseRuntimeError,
     Attachment,
 )
-
-import simplejson
 
 
 class DateTimeEncoder(simplejson.JSONEncoder):
