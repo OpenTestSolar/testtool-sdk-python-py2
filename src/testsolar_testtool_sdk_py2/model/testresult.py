@@ -1,6 +1,6 @@
 from datetime import datetime
-from enum import Enum
 
+from enum import Enum
 from typing import List, Optional, Dict
 
 
@@ -68,13 +68,13 @@ class TestCaseLog:
     __test__ = False
 
     def __init__(
-        self,
-        time,
-        level,
-        content,
-        assert_error=None,
-        runtime_error=None,
-        attachments=None,
+            self,
+            time,
+            level,
+            content,
+            assert_error=None,
+            runtime_error=None,
+            attachments=None,
     ):
         # type: (datetime, LogLevel, str, Optional[TestCaseAssertError], Optional[TestCaseRuntimeError], Optional[List[Attachment]]) -> None
         self.Time = time
@@ -127,3 +127,103 @@ class TestResult:
             ResultType.LOAD_FAILED,
             ResultType.UNKNOWN,
         ]
+
+
+def convert_to_datetime(raw):
+    # type:(Optional[str]) -> Optional[datetime]
+    if raw:
+        return datetime.strptime(raw, "%Y-%m-%dT%H:%M:%S.%fZ")
+    else:
+        return None
+
+
+def convert_to_test_result(raw):
+    # type: (Dict) -> TestResult
+    tr = TestResult(
+        test=TestCase(
+            name=raw["Test"]["Name"],
+            attributes=raw["Test"]["Attributes"],
+        ),
+        start_time=convert_to_datetime(raw["StartTime"]),
+        result_type=raw["ResultType"],
+        message=raw["Message"],
+        end_time=convert_to_datetime(raw.get("EndTime")),
+    )
+
+    tr.Steps = convert_to_steps(raw)
+
+    return tr
+
+
+def convert_to_steps(raw):
+    # type: (Dict) -> List[TestCaseStep]
+    ret = []
+    if "Steps" in raw:
+        for rawStep in raw["Steps"]:
+            step = TestCaseStep(
+                start_time=convert_to_datetime(rawStep["StartTime"]),
+                title=rawStep["Title"],
+                result_type=rawStep["ResultType"],
+                end_time=convert_to_datetime(rawStep.get("EndTime")),
+            )
+            if "Logs" in rawStep:
+                step.Logs = convert_to_logs(rawStep)
+
+            ret.append(step)
+
+    return ret
+
+
+def convert_to_logs(raw):
+    # type: (Dict) -> List[TestCaseLog]
+    ret = []
+    for rawLog in raw["Logs"]:
+        log = TestCaseLog(
+            time=convert_to_datetime(rawLog["Time"]),
+            level=rawLog["Level"],
+            content=rawLog["Content"],
+            assert_error=convert_to_assert_error(rawLog),
+            runtime_error=convert_to_runtime_error(rawLog),
+            attachments=convert_to_attachments(rawLog),
+        )
+
+        ret.append(log)
+
+    return ret
+
+
+def convert_to_assert_error(raw):
+    # type:(Dict) -> Optional[TestCaseAssertError]
+    assert_error = raw.get("AssertError")
+    if assert_error:
+        return TestCaseAssertError(
+            expected=assert_error["Expect"],
+            actual=assert_error["Actual"],
+            message=assert_error["Message"],
+        )
+    else:
+        return None
+
+
+def convert_to_runtime_error(raw):
+    # type:(Dict) -> Optional[TestCaseRuntimeError]
+    runtime_error = raw.get("RuntimeError")
+    if runtime_error:
+        return TestCaseRuntimeError(
+            summary=runtime_error["Summary"],
+            detail=runtime_error["Detail"],
+        )
+    else:
+        return None
+
+
+def convert_to_attachments(raw):
+    # type: (Dict) -> List[Attachment]
+    ret = []
+
+    attachments = raw.get("Attachments")
+    if attachments:
+        for attachment in attachments:
+            ret.append(Attachment(name=attachment["Name"], url=attachment["Url"], attachment_type=attachment["AttachmentType"]))
+
+    return ret

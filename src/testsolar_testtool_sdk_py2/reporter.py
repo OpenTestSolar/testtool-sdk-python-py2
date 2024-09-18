@@ -4,12 +4,13 @@ import io
 import logging
 import os
 from abc import ABCMeta, abstractmethod
-from typing import Any, Dict
 
 import simplejson
+from typing import Any, Dict
 
 from testsolar_testtool_sdk_py2.model.encoder import DateTimeEncoder
 from testsolar_testtool_sdk_py2.model.load import LoadResult
+from testsolar_testtool_sdk_py2.model.testresult import TestCase, convert_to_test_result
 from testsolar_testtool_sdk_py2.model.testresult import TestResult
 
 
@@ -41,22 +42,28 @@ class FileReporter(BaseReporter):
 
     def report_case_result(self, case_result):
         # type: (TestResult) -> None
-        retry_id = case_result.Test.Attributes.get("retry", "0")
-        filename = (
-                hashlib.md5("{}.{}".format(case_result.Test.Name, retry_id).encode("utf-8")).hexdigest()
-                + ".json"
-        )
+        filename = get_output_file_name(case_result.Test)
         out_file = os.path.join(self.report_path, filename)
 
         logging.debug(
             "Writing case [{}] results to {}".format(
-                "{}.{}".format(case_result.Test.Name, retry_id), out_file
+                "{}".format(case_result.Test.Name), out_file
             )
         )
 
         with io.open(out_file, "w", encoding="utf-8") as f:
             data = convert_to_json(case_result, pretty=True)
             f.write(data)
+
+
+def get_output_file_name(case):
+    # type:(TestCase) -> str
+    retry_id = case.Attributes.get("retry", "0")
+    filename = (
+            hashlib.md5("{}.{}".format(case.Name, retry_id).encode("utf-8")).hexdigest()
+            + ".json"
+    )
+    return filename
 
 
 def convert_to_json(result, pretty=False):
@@ -71,3 +78,22 @@ def deserialize_data(result_data):
     # type: (str) -> Dict[str, Any]
 
     return simplejson.loads(result_data, encoding="utf-8")
+
+
+def deserialize_test_result_from_str(result_data):
+    # type: (str) -> TestResult
+    raw = deserialize_data(result_data)
+
+    return convert_to_test_result(raw)
+
+
+def deserialize_test_result_from_case(output, case):
+    # type:(str, TestCase) -> TestResult
+    filename = get_output_file_name(case)
+
+    output_file = os.path.join(output, filename)
+
+    assert os.path.exists(output_file)
+
+    with open(output_file, "r") as f:
+        return deserialize_test_result_from_str(f.read())
