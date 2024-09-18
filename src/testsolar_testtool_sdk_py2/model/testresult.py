@@ -194,8 +194,8 @@ def convert_to_logs(raw):
 
 def convert_to_assert_error(raw):
     # type:(Dict) -> Optional[TestCaseAssertError]
-    if "AssertError" in raw:
-        assert_error = raw["AssertError"]
+    assert_error = raw.get("AssertError")
+    if assert_error:
         return TestCaseAssertError(
             expected=assert_error["Expect"],
             actual=assert_error["Actual"],
@@ -207,8 +207,8 @@ def convert_to_assert_error(raw):
 
 def convert_to_runtime_error(raw):
     # type:(Dict) -> Optional[TestCaseRuntimeError]
-    if "RuntimeError" in raw:
-        runtime_error = raw["RuntimeError"]
+    runtime_error = raw.get("RuntimeError")
+    if runtime_error:
         return TestCaseRuntimeError(
             summary=runtime_error["Summary"],
             detail=runtime_error["Detail"],
@@ -220,8 +220,9 @@ def convert_to_runtime_error(raw):
 def convert_to_attachments(raw):
     # type: (Dict) -> List[Attachment]
     ret = []
-    if "Attachments" in raw:
-        attachments = raw["Attachments"]
+
+    attachments = raw.get("Attachments")
+    if attachments:
         for attachment in attachments:
             ret.append(Attachment(name=attachment["Name"], url=attachment["Url"], attachment_type=attachment["AttachmentType"]))
 

@@ -26,12 +26,14 @@ from testsolar_testtool_sdk_py2.reporter import (
     FileReporter,
     BaseReporter,
     deserialize_data,
+    deserialize_test_result_from_case
 )
+
+from conftest import smart_str
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-from conftest import smart_str
 
 def get_random_unicode(length):
     # type: (int) -> str
@@ -185,6 +187,9 @@ def test_report_run_case_result_with_file():
                     tr = deserialize_data(f.read())
 
                     assert tr.get("ResultType") == ResultType.SUCCEED
+
+        tr = deserialize_test_result_from_case(tmp_dir, TestCase(name="mumu/mu.py/test_case_name_1_p1", attributes={}))
+        assert tr.Test.Name == "mumu/mu.py/test_case_name_1_p1"
     finally:
         shutil.rmtree(tmp_dir)
 
@@ -254,4 +259,3 @@ def test_convert_to_json_with_custom_encoder():
     assert len(log.Attachments) == 1
     attachment = log.Attachments[0]
     assert attachment.AttachmentType == tr.Steps[0].Logs[0].Attachments[0].AttachmentType
-
