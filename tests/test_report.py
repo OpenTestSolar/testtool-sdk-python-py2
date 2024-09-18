@@ -29,8 +29,6 @@ from testsolar_testtool_sdk_py2.reporter import (
     deserialize_test_result_from_case
 )
 
-from conftest import smart_str
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -192,6 +190,13 @@ def test_report_run_case_result_with_file():
         assert tr.Test.Name == "mumu/mu.py/test_case_name_1_p1"
     finally:
         shutil.rmtree(tmp_dir)
+
+
+def smart_str(data):
+    if isinstance(data, six.binary_type):
+        return data.decode("utf-8")
+    else:
+        return data
 
 
 def test_convert_to_json_with_custom_encoder():
