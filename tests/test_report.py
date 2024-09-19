@@ -11,7 +11,12 @@ from datetime import datetime, timedelta
 import six
 
 from testsolar_testtool_sdk_py2.model.load import LoadResult, LoadError
-from testsolar_testtool_sdk_py2.model.testresult import ResultType, LogLevel, TestCase, convert_to_test_result
+from testsolar_testtool_sdk_py2.model.testresult import (
+    ResultType,
+    LogLevel,
+    TestCase,
+    convert_to_test_result,
+)
 from testsolar_testtool_sdk_py2.model.testresult import (
     TestResult,
     TestCaseStep,
@@ -26,7 +31,7 @@ from testsolar_testtool_sdk_py2.reporter import (
     FileReporter,
     BaseReporter,
     deserialize_data,
-    deserialize_test_result_from_case
+    deserialize_test_result_from_case,
 )
 
 logger = logging.getLogger(__name__)
@@ -186,7 +191,9 @@ def test_report_run_case_result_with_file():
 
                     assert tr.get("ResultType") == ResultType.SUCCEED
 
-        tr = deserialize_test_result_from_case(tmp_dir, TestCase(name="mumu/mu.py/test_case_name_1_p1", attributes={}))
+        tr = deserialize_test_result_from_case(
+            tmp_dir, TestCase(name="mumu/mu.py/test_case_name_1_p1", attributes={})
+        )
         assert tr.Test.Name == "mumu/mu.py/test_case_name_1_p1"
     finally:
         shutil.rmtree(tmp_dir)
