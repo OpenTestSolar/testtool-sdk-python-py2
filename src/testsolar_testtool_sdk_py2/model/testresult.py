@@ -21,6 +21,7 @@ class ResultType(str, Enum):
     IGNORED = "IGNORED"
     RUNNING = "RUNNING"
     WAITING = "WAITING"
+    FILTERED = "FILTERED"
 
 
 class LogLevel(str, Enum):
@@ -68,13 +69,13 @@ class TestCaseLog:
     __test__ = False
 
     def __init__(
-            self,
-            time,
-            level,
-            content,
-            assert_error=None,
-            runtime_error=None,
-            attachments=None,
+        self,
+        time,
+        level,
+        content,
+        assert_error=None,
+        runtime_error=None,
+        attachments=None,
     ):
         # type: (datetime, LogLevel, str, Optional[TestCaseAssertError], Optional[TestCaseRuntimeError], Optional[List[Attachment]]) -> None
         self.Time = time
@@ -224,6 +225,12 @@ def convert_to_attachments(raw):
     attachments = raw.get("Attachments")
     if attachments:
         for attachment in attachments:
-            ret.append(Attachment(name=attachment["Name"], url=attachment["Url"], attachment_type=attachment["AttachmentType"]))
+            ret.append(
+                Attachment(
+                    name=attachment["Name"],
+                    url=attachment["Url"],
+                    attachment_type=attachment["AttachmentType"],
+                )
+            )
 
     return ret

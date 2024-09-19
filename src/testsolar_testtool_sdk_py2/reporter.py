@@ -46,9 +46,7 @@ class FileReporter(BaseReporter):
         out_file = os.path.join(self.report_path, filename)
 
         logging.debug(
-            "Writing case [{}] results to {}".format(
-                "{}".format(case_result.Test.Name), out_file
-            )
+            "Writing case [{}] results to {}".format("{}".format(case_result.Test.Name), out_file)
         )
 
         with io.open(out_file, "w", encoding="utf-8") as f:
@@ -60,8 +58,7 @@ def get_output_file_name(case):
     # type:(TestCase) -> str
     retry_id = case.Attributes.get("retry", "0")
     filename = (
-            hashlib.md5("{}.{}".format(case.Name, retry_id).encode("utf-8")).hexdigest()
-            + ".json"
+        hashlib.md5("{}.{}".format(case.Name, retry_id).encode("utf-8")).hexdigest() + ".json"
     )
     return filename
 
