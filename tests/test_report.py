@@ -273,6 +273,7 @@ def test_convert_to_json_with_custom_encoder():
     attachment = log.Attachments[0]
     assert attachment.AttachmentType == tr.Steps[0].Logs[0].Attachments[0].AttachmentType
 
+
 def generate_junit_xml(file_path):
     root = Element("testsuite")
     testcase = SubElement(root, "testcase", classname="path.to.case", name="Test01", time="0.123")
@@ -282,13 +283,14 @@ def generate_junit_xml(file_path):
     with open(file_path, "w") as f:
         f.write(xml_data)
 
+
 def test_report_run_case_result_with_junit_xml():
     # 创建一个Reporter实例
     tmp_dir = tempfile.mkdtemp()
     try:
         xml_abs_path = os.path.join(tmp_dir, "test.xml")
         generate_junit_xml(xml_abs_path)
-        
+
         reporter = FileReporter(tmp_dir)
         reporter.report_junit_xml(xml_abs_path)
 
