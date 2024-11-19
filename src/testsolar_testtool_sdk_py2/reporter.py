@@ -1,4 +1,5 @@
 # coding=utf-8
+from datetime import datetime
 import hashlib
 import io
 import logging
@@ -7,10 +8,10 @@ from abc import ABCMeta, abstractmethod
 
 import simplejson
 from typing import Any, Dict
-
+import xml.etree.ElementTree as ET
 from testsolar_testtool_sdk_py2.model.encoder import DateTimeEncoder
 from testsolar_testtool_sdk_py2.model.load import LoadResult
-from testsolar_testtool_sdk_py2.model.testresult import TestCase, convert_to_test_result
+from testsolar_testtool_sdk_py2.model.testresult import ResultType, TestCase, convert_to_test_result
 from testsolar_testtool_sdk_py2.model.testresult import TestResult
 
 
@@ -26,6 +27,12 @@ class BaseReporter(object):
     def report_case_result(self, case_result):
         # type: (TestResult) -> None
         pass
+
+    def report_junit_xml(self, file_path):
+        # type: (str) -> None
+        results = parse_junit_xml(file_path=file_path)
+        for result in results:
+            self.report_case_result(result)
 
 
 class FileReporter(BaseReporter):
@@ -94,3 +101,35 @@ def deserialize_test_result_from_case(output, case):
 
     with open(output_file, "r") as f:
         return deserialize_test_result_from_str(f.read())
+
+
+def parse_junit_xml(file_path):
+    # type: (str) -> None
+    tree = ET.parse(file_path)
+    root = tree.getroot()
+
+    test_results = []
+    for testcase in root.findall("testcase"):
+        classname = testcase.get("classname")
+        if not classname:
+            continue
+        name = testcase.get("name")
+        failure = testcase.find("failure")
+
+        result_type = ResultType.SUCCEED
+        message = ""
+        if failure is not None:
+            result_type = ResultType.FAILED
+            message = failure.get("message", "")
+        test_case = TestCase(name="{}?{}".format(classname.replace(".", "/"), name), attributes={})
+        test_result = TestResult(
+            test=test_case,
+            result_type=result_type,
+            message=message,
+            steps=[],
+            start_time=datetime.now(),
+        )
+        logging.info("parse test result {} from xml".format(test_result))
+        test_results.append(test_result)
+
+    return test_results

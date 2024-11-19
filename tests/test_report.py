@@ -33,6 +33,7 @@ from testsolar_testtool_sdk_py2.reporter import (
     deserialize_data,
     deserialize_test_result_from_case,
 )
+from xml.etree.ElementTree import Element, SubElement, tostring
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -271,3 +272,40 @@ def test_convert_to_json_with_custom_encoder():
     assert len(log.Attachments) == 1
     attachment = log.Attachments[0]
     assert attachment.AttachmentType == tr.Steps[0].Logs[0].Attachments[0].AttachmentType
+
+
+def generate_junit_xml(file_path):
+    root = Element("testsuite")
+    testcase = SubElement(root, "testcase", classname="path.to.case", name="Test01", time="0.123")
+    failure = SubElement(testcase, "failure", message="Test failed", type="AssertionError")
+    failure.text = "Failure details"
+    xml_data = tostring(root).decode()
+    with open(file_path, "w") as f:
+        f.write(xml_data)
+
+
+def test_report_run_case_result_with_junit_xml():
+    # 创建一个Reporter实例
+    tmp_dir = tempfile.mkdtemp()
+    try:
+        xml_abs_path = os.path.join(tmp_dir, "test.xml")
+        generate_junit_xml(xml_abs_path)
+
+        reporter = FileReporter(tmp_dir)
+        reporter.report_junit_xml(xml_abs_path)
+
+        # 检查生成的文件是否符合要求
+        for dirpath, _, filenames in os.walk(tmp_dir):
+            for filename in filenames:
+                if filename.endswith(".json"):
+                    with open(os.path.join(dirpath, filename), "r") as f:
+                        tr = deserialize_data(f.read())
+
+                        assert tr.get("ResultType") == ResultType.FAILED
+
+        tr = deserialize_test_result_from_case(
+            tmp_dir, TestCase(name="path/to/case?Test01", attributes={})
+        )
+        assert tr.Test.Name == "path/to/case?Test01"
+    finally:
+        shutil.rmtree(tmp_dir)
