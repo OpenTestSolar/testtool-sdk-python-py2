@@ -121,8 +121,7 @@ def parse_junit_xml(file_path):
         if failure is not None:
             result_type = ResultType.FAILED
             message = failure.get("message", "")
-
-        test_case = TestCase(name=f"{classname.replace('.', '/')}?{name}", attributes={})
+        test_case = TestCase(name="{}?{}".format(classname.replace('.', '/'), name), attributes={})
         test_result = TestResult(
             test=test_case,
             result_type=result_type,
@@ -130,6 +129,7 @@ def parse_junit_xml(file_path):
             steps=[],
             start_time=datetime.now(),
         )
+        logging.info("parse test result {} from xml".format(test_result))
         test_results.append(test_result)
 
     return test_results
