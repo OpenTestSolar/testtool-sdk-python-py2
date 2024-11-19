@@ -7,7 +7,7 @@ authors = [
 ]
 urls = { repository = "https://github.com/OpenTestSolar/testtool-sdk-python-py2" }
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=2.7"
 dependencies = [
     "enum34>=1.1.10",
     "simplejson>=3.19.3",
@@ -36,7 +36,7 @@ line-length = 100
 
 [tool.uv]
 dev-dependencies = [
-    "pytest-cov>=4.1.0",
-    "pytest>=7",
-    "setuptools>=68.0.0",
+    "pytest-cov<=2.12.1",
+    "pytest<=4.6.11",
+    "setuptools<=44.1.1",
 ]
